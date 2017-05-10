@@ -120,4 +120,20 @@ public class Message
 	{
 		this.creationDate = creationDate;
 	}
+
+	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}", type = "application/json", rel=
+		"selfUri")
+	private Link selfUri;
+
+	@JsonConverter( LinkConverter.class )
+	public Link getSelfUri( )
+	{
+		return selfUri;
+	}
+
+	@JsonIgnore
+	public void setSelfUri( Link selfUri )
+	{
+		this.selfUri = selfUri;
+	}
 }

@@ -46,4 +46,20 @@ public class User
 	{
 		this.messageUrl = messageUrl;
 	}
+
+	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "users/${instance.id}", type = "application/json", rel=
+		"selfUri")
+	private Link selfUri;
+
+	@JsonConverter( LinkConverter.class )
+	public Link getSelfUri( )
+	{
+		return selfUri;
+	}
+
+	@JsonIgnore
+	public void setSelfUri( Link selfUri )
+	{
+		this.selfUri = selfUri;
+	}
 }
