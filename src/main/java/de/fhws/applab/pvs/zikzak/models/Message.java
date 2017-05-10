@@ -1,11 +1,13 @@
 package de.fhws.applab.pvs.zikzak.models;
 
 import com.owlike.genson.annotation.JsonConverter;
+import com.owlike.genson.annotation.JsonDateFormat;
 import com.owlike.genson.annotation.JsonIgnore;
 import de.fhws.applab.pvs.zikzak.converter.LinkConverter;
 import org.glassfish.jersey.linking.InjectLink;
 
 import javax.ws.rs.core.Link;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +23,9 @@ public class Message
 	private Set<String> upVotes;
 
 	private Set<String> downVotes;
+
+	@JsonDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+	private Date creationDate;
 
 	public Message( )
 	{
@@ -102,5 +107,17 @@ public class Message
 	public void setDownVoteLink( Link downVoteLink )
 	{
 		this.downVoteLink = downVoteLink;
+	}
+
+
+	public Date getCreationDate( )
+	{
+		return creationDate;
+	}
+
+	@JsonIgnore
+	public void setCreationDate( Date creationDate )
+	{
+		this.creationDate = creationDate;
 	}
 }
