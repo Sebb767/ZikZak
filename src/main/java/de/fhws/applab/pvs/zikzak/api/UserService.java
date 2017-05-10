@@ -30,7 +30,50 @@ public class UserService
 
 		return Response.ok( users )
 					   .header( "Link", createPostUserHeader( ) )
+					   .header( "Link", createSelfUriForPage( ) )
+					   .header( "Link", createPrevUriForPage( size, offset ) )
+					   .header( "Link", createNextUriForPage( size, offset ) )
+					   .header( "X-totalnumberofresults", createTotalNumberHeader( ) )
+					   .header( "X-numberofresults", users.size( ) )
 					   .build( );
+	}
+
+	private int createTotalNumberHeader( )
+	{
+		return Storage.getInstance( ).getTotalNumberOfUsers( );
+	}
+
+	private String createSelfUriForPage()
+	{
+		return Hyperlinks.linkHeader( uriInfo.getRequestUri( ).toString( ), "self", MediaType.APPLICATION_JSON );
+	}
+
+	private String createNextUriForPage(int size, int offset)
+	{
+		int totalNumber = Storage.getInstance( ).getTotalNumberOfUsers( );
+
+		int nextOffset = Math.min( offset + size, totalNumber );
+
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String nextUri = location.toString() + "?size=" + size + "&offset=" + nextOffset;
+
+		return Hyperlinks.linkHeader( nextUri, "next", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPrevUriForPage(int size, int offset)
+	{
+		int prevOffset = Math.max(offset - size, 0);
+
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String prevUri = location.toString() + "?size=" + size + "&offset=" + prevOffset;
+
+		return Hyperlinks.linkHeader( prevUri, "prev", MediaType.APPLICATION_JSON );
 	}
 
 	@POST

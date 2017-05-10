@@ -42,6 +42,23 @@ public class Storage
 		userToMessageMap = new HashMap<>( );
 	}
 
+	public int getTotalNumberOfUsers()
+	{
+		return userStorage.size( );
+	}
+
+	public int getTotalNumberOfMessages()
+	{
+		return Math.min( messageStorage.size( ), 100 );
+	}
+
+	public int getTotalNumberOfMessagesOfUser( String userid )
+	{
+		Set<Long> messageIds = userToMessageMap.get( userid );
+
+		return messageIds == null ? 0 : messageIds.size( );
+	}
+
 	public String createUser( User user )
 	{
 		UUID uuid = UUID.randomUUID( );

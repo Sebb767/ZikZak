@@ -31,7 +31,50 @@ public class MessageSecondaryService
 
 		return Response.ok( messages )
 					   .header( "Link", createPostMessageConnectionHeader( ) )
+					   .header( "Link", createSelfUriForPage( ) )
+					   .header( "Link", createPrevUriForPage( size, offset ) )
+					   .header( "Link", createNextUriForPage( userid, size, offset ) )
+					   .header( "X-totalnumberofresults", createTotalNumberHeader( userid ) )
+					   .header( "X-numberofresults", messages.size( ) )
 					   .build( );
+	}
+
+	private int createTotalNumberHeader( String userid )
+	{
+		return Storage.getInstance( ).getTotalNumberOfMessagesOfUser( userid );
+	}
+
+	private String createSelfUriForPage()
+	{
+		return Hyperlinks.linkHeader( uriInfo.getRequestUri( ).toString( ), "self", MediaType.APPLICATION_JSON );
+	}
+
+	private String createNextUriForPage(String userid, int size, int offset)
+	{
+		int totalNumber = Storage.getInstance( ).getTotalNumberOfMessagesOfUser( userid );
+
+		int nextOffset = Math.min( offset + size, totalNumber );
+
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String nextUri = location.toString() + "?size=" + size + "&offset=" + nextOffset;
+
+		return Hyperlinks.linkHeader( nextUri, "next", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPrevUriForPage(int size, int offset)
+	{
+		int prevOffset = Math.max(offset - size, 0);
+
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String prevUri = location.toString() + "?size=" + size + "&offset=" + prevOffset;
+
+		return Hyperlinks.linkHeader( prevUri, "prev", MediaType.APPLICATION_JSON );
 	}
 
 	@GET
