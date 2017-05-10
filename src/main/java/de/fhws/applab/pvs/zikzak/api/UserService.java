@@ -87,8 +87,6 @@ public class UserService
 			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
 		}
 
-		URI location = uriInfo.getBaseUriBuilder( ).path( this.getClass( ) ).build( );
-
 		return Response.noContent( )
 					   .header( "Link", createGetAllUsersHeader( ) )
 					   .build( );
@@ -107,8 +105,6 @@ public class UserService
 		{
 			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
 		}
-
-		URI location = uriInfo.getRequestUri( );
 
 		return Response.noContent( )
 					   .header( "Link", createGetAllUsersHeader( ) )

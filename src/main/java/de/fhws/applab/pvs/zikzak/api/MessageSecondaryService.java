@@ -6,6 +6,7 @@ package de.fhws.applab.pvs.zikzak.api;
 
 import de.fhws.applab.pvs.zikzak.models.Message;
 import de.fhws.applab.pvs.zikzak.storage.Storage;
+import de.fhws.applab.pvs.zikzak.utils.Hyperlinks;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -28,7 +29,9 @@ public class MessageSecondaryService
 	{
 		List<Message> messages = Storage.getInstance( ).getMessagesOfUser( userid, size, offset );
 
-		return Response.ok( messages ).build( );
+		return Response.ok( messages )
+					   .header( "Link", createPostMessageConnectionHeader( ) )
+					   .build( );
 	}
 
 	@GET
@@ -49,7 +52,10 @@ public class MessageSecondaryService
 			throw new WebApplicationException( Response.Status.NOT_FOUND );
 		}
 
-		return Response.ok( message ).build( );
+		return Response.ok( message )
+					   .header( "Link", createGetAllMessageConnectionsHeader( ) )
+					   .header( "Link", createDeleteMessageConnectionHeader( ) )
+					   .build( );
 	}
 
 	@POST
@@ -61,7 +67,9 @@ public class MessageSecondaryService
 
 		URI location = uriInfo.getAbsolutePathBuilder( ).build( );
 
-		return Response.created( location ).build( );
+		return Response.created( location )
+					   .header( "Link", createGetAllMessageConnectionsHeader( ) )
+					   .build( );
 	}
 
 	@DELETE
@@ -71,7 +79,9 @@ public class MessageSecondaryService
 	{
 		Storage.getInstance( ).removeMessageFromUser( userid, id );
 
-		return Response.noContent( ).build( );
+		return Response.noContent( )
+					   .header( "Link", createGetAllMessageConnectionsHeader( ) )
+					   .build( );
 	}
 
 	@GET
@@ -79,5 +89,32 @@ public class MessageSecondaryService
 	public String ping( )
 	{
 		return "OK";
+	}
+
+	private String createGetAllMessageConnectionsHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String uri = location.toString() + "?size={SIZE}&offset={OFFSET}";
+
+		return Hyperlinks.linkHeader( uri, "getAllMessagesOfUser", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPostMessageConnectionHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "createMessageConnection", MediaType.APPLICATION_JSON );
+	}
+
+	private String createDeleteMessageConnectionHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "deleteMessageConnection", MediaType.APPLICATION_JSON );
 	}
 }

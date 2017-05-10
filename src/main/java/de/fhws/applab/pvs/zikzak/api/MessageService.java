@@ -2,6 +2,7 @@ package de.fhws.applab.pvs.zikzak.api;
 
 import de.fhws.applab.pvs.zikzak.models.Message;
 import de.fhws.applab.pvs.zikzak.storage.Storage;
+import de.fhws.applab.pvs.zikzak.utils.Hyperlinks;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,7 +28,9 @@ public class MessageService
 	{
 		List<Message> messages = Storage.getInstance( ).getMessages( size, offset );
 
-		return Response.ok( messages ).build( );
+		return Response.ok( messages )
+					   .header( "Link", createPostMessageHeader( ) )
+					   .build( );
 	}
 
 	@POST
@@ -48,6 +51,7 @@ public class MessageService
 							  .build( );
 
 		return Response.created( location )
+					   .header( "Link", createGetAllMessagesHeader( ) )
 					   .build( );
 	}
 
@@ -63,7 +67,11 @@ public class MessageService
 			throw new WebApplicationException( Response.Status.NOT_FOUND );
 		}
 
-		return Response.ok( message ).build( );
+		return Response.ok( message )
+					   .header( "Link", createGetAllMessagesHeader( ) )
+					   .header( "Link", createPutMessageHeader( ) )
+					   .header( "Link", createDeleteMessageHeader( ) )
+					   .build( );
 	}
 
 	@DELETE
@@ -79,10 +87,8 @@ public class MessageService
 			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
 		}
 
-		URI location = uriInfo.getBaseUriBuilder( ).path( this.getClass( ) ).build( );
-
 		return Response.noContent( )
-					   .contentLocation( location )
+					   .header("Link", createGetAllMessagesHeader())
 					   .build( );
 	}
 
@@ -100,10 +106,9 @@ public class MessageService
 			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
 		}
 
-		URI location = uriInfo.getRequestUri( );
-
 		return Response.noContent( )
-					   .contentLocation( location )
+					   .header( "Link", createGetAllMessagesHeader( ) )
+					   .header( "Link", createGetSingleMessageHeader( ) )
 					   .build( );
 	}
 
@@ -146,5 +151,46 @@ public class MessageService
 	public String ping( )
 	{
 		return "OK";
+	}
+
+	private String createGetAllMessagesHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String uri = location.toString() + "?size={SIZE}&offset={OFFSET}";
+
+		return Hyperlinks.linkHeader( uri, "getAllMessages", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPostMessageHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "createMessage", MediaType.APPLICATION_JSON );
+	}
+
+	private String createGetSingleMessageHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "getSingleMessage", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPutMessageHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "updateMessage", MediaType.APPLICATION_JSON );
+	}
+
+	private String createDeleteMessageHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "deleteMessage", MediaType.APPLICATION_JSON );
 	}
 }
