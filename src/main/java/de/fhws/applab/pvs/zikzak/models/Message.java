@@ -55,14 +55,24 @@ public class Message
 		return upVotes.size( );
 	}
 
+	public void addUpVote( String userId )
+	{
+		upVotes.add( userId );
+	}
+
 	public int getDownVotes()
 	{
 		return downVotes.size( );
 	}
 
+	public void addDownVote( String userId )
+	{
+		downVotes.add( userId );
+	}
+
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/upvotes", type =
 		"application/json",
-		rel = "upvoteUrl")
+		rel = "putUpvote")
 	private Link upVoteLink;
 
 	@JsonConverter( LinkConverter.class )
@@ -79,7 +89,7 @@ public class Message
 
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/downvotes", type =
 		"application/json",
-		rel = "downvoteUrl")
+		rel = "putDownvote")
 	private Link downVoteLink;
 
 	@JsonConverter( LinkConverter.class )

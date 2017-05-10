@@ -165,6 +165,13 @@ public class Storage
 
 	}
 
+	public boolean ownsUserMessage( String userId, long id )
+	{
+		Set<Long> messageIds = userToMessageMap.get( userId );
+
+		return messageIds.contains( id );
+	}
+
 	public List<Message> getMessagesOfUser( String userId, int size, int offset )
 	{
 		List<Message> messages = new ArrayList<>( );

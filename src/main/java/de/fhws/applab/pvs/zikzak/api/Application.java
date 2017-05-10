@@ -41,6 +41,7 @@ public class Application extends ResourceConfig
 		returnValue.add( DispatcherService.class );
 		returnValue.add( UserService.class );
 		returnValue.add( MessageService.class );
+		returnValue.add( MessageSecondaryService.class );
 
 		return returnValue;
 	}

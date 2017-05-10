@@ -107,6 +107,40 @@ public class MessageService
 					   .build( );
 	}
 
+	@PUT
+	@Path( "{id}/downvotes" )
+	@Consumes( MediaType.APPLICATION_JSON )
+	public Response doDownvote( @PathParam( "id" ) long id, String userid )
+	{
+		Message message = Storage.getInstance( ).getMessage( id );
+
+		if(message == null)
+		{
+			throw new WebApplicationException( Response.Status.NOT_FOUND );
+		}
+
+		message.addDownVote( userid );
+
+		return Response.noContent( ).build( );
+	}
+
+	@PUT
+	@Path( "{id}/upvotes" )
+	@Consumes( MediaType.APPLICATION_JSON )
+	public Response doUpvote( @PathParam( "id" ) long id, String userid )
+	{
+		Message message = Storage.getInstance( ).getMessage( id );
+
+		if(message == null)
+		{
+			throw new WebApplicationException( Response.Status.NOT_FOUND );
+		}
+
+		message.addUpVote( userid );
+
+		return Response.noContent( ).build( );
+	}
+
 	@GET
 	@Path( "ping" )
 	public String ping( )
