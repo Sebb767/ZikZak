@@ -1,0 +1,96 @@
+package de.fhws.applab.pvs.zikzak.models;
+
+import com.owlike.genson.annotation.JsonConverter;
+import com.owlike.genson.annotation.JsonIgnore;
+import de.fhws.applab.pvs.zikzak.converter.LinkConverter;
+import org.glassfish.jersey.linking.InjectLink;
+
+import javax.ws.rs.core.Link;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * (c) Tobias Fertig, FHWS 2017
+ */
+public class Message
+{
+	private long id;
+
+	private String text;
+
+	private Set<String> upVotes;
+
+	private Set<String> downVotes;
+
+	public Message( )
+	{
+		this.upVotes = new HashSet<>( );
+
+		this.downVotes = new HashSet<>( );
+	}
+
+	public long getId( )
+	{
+		return id;
+	}
+
+	@JsonIgnore
+	public void setId( long id )
+	{
+		this.id = id;
+	}
+
+	public String getText( )
+	{
+		return text;
+	}
+
+	public void setText( String text )
+	{
+		this.text = text;
+	}
+
+	public int getUpVotes()
+	{
+		return upVotes.size( );
+	}
+
+	public int getDownVotes()
+	{
+		return downVotes.size( );
+	}
+
+	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/upvotes", type =
+		"application/json",
+		rel = "upvoteUrl")
+	private Link upVoteLink;
+
+	@JsonConverter( LinkConverter.class )
+	public Link getUpVoteLink( )
+	{
+		return upVoteLink;
+	}
+
+	@JsonIgnore
+	public void setUpVoteLink( Link upVoteLink )
+	{
+		this.upVoteLink = upVoteLink;
+	}
+
+	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/downvotes", type =
+		"application/json",
+		rel = "downvoteUrl")
+	private Link downVoteLink;
+
+	@JsonConverter( LinkConverter.class )
+	public Link getDownVoteLink( )
+	{
+		return downVoteLink;
+	}
+
+	@JsonIgnore
+	public void setDownVoteLink( Link downVoteLink )
+	{
+		this.downVoteLink = downVoteLink;
+	}
+}
