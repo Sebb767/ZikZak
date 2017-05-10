@@ -32,6 +32,8 @@ public class Message
 		this.upVotes = new HashSet<>( );
 
 		this.downVotes = new HashSet<>( );
+
+		this.creationDate = new Date( );
 	}
 
 	public long getId( )
