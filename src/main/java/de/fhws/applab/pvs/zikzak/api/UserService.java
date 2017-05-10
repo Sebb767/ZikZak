@@ -22,19 +22,12 @@ public class UserService
 
 	@GET
 	@Produces( MediaType.APPLICATION_JSON )
-	public Response listAllUsers( )
+	public Response listAllUsers( @QueryParam( "size" ) @DefaultValue( "10" ) int size,
+		@QueryParam( "offset" ) @DefaultValue( "0" ) int offset )
 	{
-		List<?> models;
-		try
-		{
+		List<User> users = Storage.getInstance( ).getUsers( size, offset );
 
-		}
-		catch ( Exception e )
-		{
-			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
-		}
-
-		return null;
+		return Response.ok( users ).build( );
 	}
 
 	@POST

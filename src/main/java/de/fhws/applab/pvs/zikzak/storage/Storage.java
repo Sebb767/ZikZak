@@ -58,6 +58,25 @@ public class Storage
 		return userStorage.get( id );
 	}
 
+	public List<User> getUsers( int size, int offset )
+	{
+		List<User> users = new ArrayList<>( );
+
+		int count = 0;
+
+		for ( User user : userStorage.values( ) )
+		{
+			if ( count >= offset && users.size( ) <= size )
+			{
+				users.add( user );
+			}
+
+			count++;
+		}
+
+		return users;
+	}
+
 	public void deleteUser( String id )
 	{
 		userStorage.remove( id );
@@ -86,6 +105,25 @@ public class Storage
 	public Message getMessage( long id )
 	{
 		return messageStorage.get( id );
+	}
+
+	public List<Message> getMessages( int size, int offset )
+	{
+		List<Message> messages = new ArrayList<>( );
+
+		int count = 0;
+
+		for ( Message message : messageStorage.values( ) )
+		{
+			if ( count >= offset && messages.size( ) <= size )
+			{
+				messages.add( message );
+			}
+
+			count++;
+		}
+
+		return messages;
 	}
 
 	public void deleteMessage( long id )
@@ -127,16 +165,22 @@ public class Storage
 
 	}
 
-	public List<Message> getMessagesOfUser( String userId )
+	public List<Message> getMessagesOfUser( String userId, int size, int offset )
 	{
 		List<Message> messages = new ArrayList<>( );
 		Set<Long> messageIds = userToMessageMap.get( userId );
 
 		if ( messageIds != null )
 		{
+			int count = 0;
+
 			for ( Long messageId : messageIds )
 			{
-				messages.add( messageStorage.get( messageId ) );
+				if ( count >= offset && messages.size( ) <= size )
+				{
+					messages.add( messageStorage.get( messageId ) );
+				}
+				count++;
 			}
 		}
 

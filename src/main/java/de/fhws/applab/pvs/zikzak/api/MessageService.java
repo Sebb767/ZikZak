@@ -22,19 +22,12 @@ public class MessageService
 
 	@GET
 	@Produces( MediaType.APPLICATION_JSON )
-	public Response listAllMessages( )
+	public Response listAllMessages( @QueryParam( "size" ) @DefaultValue( "10" ) int size,
+		@QueryParam( "offset" ) @DefaultValue( "0" ) int offset )
 	{
-		List<?> models;
-		try
-		{
+		List<Message> messages = Storage.getInstance( ).getMessages( size, offset );
 
-		}
-		catch ( Exception e )
-		{
-			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );
-		}
-
-		return null;
+		return Response.ok( messages ).build( );
 	}
 
 	@POST
