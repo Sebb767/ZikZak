@@ -2,6 +2,7 @@ package de.fhws.applab.pvs.zikzak.api;
 
 import de.fhws.applab.pvs.zikzak.models.User;
 import de.fhws.applab.pvs.zikzak.storage.Storage;
+import de.fhws.applab.pvs.zikzak.utils.Hyperlinks;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,7 +28,9 @@ public class UserService
 	{
 		List<User> users = Storage.getInstance( ).getUsers( size, offset );
 
-		return Response.ok( users ).build( );
+		return Response.ok( users )
+					   .header( "Link", createPostUserHeader( ) )
+					   .build( );
 	}
 
 	@POST
@@ -48,6 +51,7 @@ public class UserService
 							  .build( );
 
 		return Response.created( location )
+					   .header( "Link", createGetAllUsersHeader( ) )
 					   .build( );
 	}
 
@@ -63,7 +67,11 @@ public class UserService
 			throw new WebApplicationException( Response.Status.NOT_FOUND );
 		}
 
-		return Response.ok( user ).build( );
+		return Response.ok( user )
+					   .header( "Link", createGetAllUsersHeader( ) )
+					   .header( "Link", createPutUserHeader( ) )
+					   .header( "Link", createDeleteUserHeader( ) )
+					   .build( );
 	}
 
 	@DELETE
@@ -82,7 +90,7 @@ public class UserService
 		URI location = uriInfo.getBaseUriBuilder( ).path( this.getClass( ) ).build( );
 
 		return Response.noContent( )
-					   .contentLocation( location )
+					   .header( "Link", createGetAllUsersHeader( ) )
 					   .build( );
 	}
 
@@ -103,7 +111,8 @@ public class UserService
 		URI location = uriInfo.getRequestUri( );
 
 		return Response.noContent( )
-					   .contentLocation( location )
+					   .header( "Link", createGetAllUsersHeader( ) )
+					   .header( "Link", createGetSingleUserHeader( ) )
 					   .build( );
 	}
 
@@ -112,5 +121,46 @@ public class UserService
 	public String ping( )
 	{
 		return "OK";
+	}
+
+	private String createGetAllUsersHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		String uri = location.toString() + "?size={SIZE}&offset={OFFSET}";
+
+		return Hyperlinks.linkHeader( uri, "getAllUsers", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPostUserHeader( )
+	{
+		URI location = uriInfo.getBaseUriBuilder( )
+							  .path( this.getClass( ) )
+							  .build( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "createUser", MediaType.APPLICATION_JSON );
+	}
+
+	private String createGetSingleUserHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "getSingleUser", MediaType.APPLICATION_JSON );
+	}
+
+	private String createPutUserHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "updateUser", MediaType.APPLICATION_JSON );
+	}
+
+	private String createDeleteUserHeader()
+	{
+		URI location = uriInfo.getRequestUri( );
+
+		return Hyperlinks.linkHeader( location.toString( ), "deleteUser", MediaType.APPLICATION_JSON );
 	}
 }
