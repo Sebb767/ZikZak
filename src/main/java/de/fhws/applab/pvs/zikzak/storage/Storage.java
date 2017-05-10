@@ -121,6 +121,11 @@ public class Storage
 			}
 
 			count++;
+
+			if(count == 100)
+			{
+				break;
+			}
 		}
 
 		return messages;
