@@ -77,9 +77,9 @@ public class UserService
 	}
 
 	@POST
-	@Consumes( MediaType.APPLICATION_JSON )
-	public Response saveUser( User user )
+	public Response saveUser( )
 	{
+		User user = new User();
 		try
 		{
 			Storage.getInstance( ).createUser( user );
