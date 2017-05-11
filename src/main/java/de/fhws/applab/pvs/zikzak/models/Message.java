@@ -124,7 +124,7 @@ public class Message
 	}
 
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}", type = "application/json", rel=
-		"selfUri")
+		"self")
 	private Link selfUri;
 
 	@JsonConverter( LinkConverter.class )

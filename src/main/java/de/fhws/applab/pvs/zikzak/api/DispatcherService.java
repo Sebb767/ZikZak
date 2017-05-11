@@ -18,14 +18,13 @@ public class DispatcherService
 
 	@GET
 	@Produces( MediaType.APPLICATION_JSON )
-
 	public Response getBase( )
 	{
-		String userUri = uriInfo.getAbsolutePathBuilder( ).path( "users" ).build( new Object[ 0 ] ).toString( );
-		String messageUri = uriInfo.getAbsolutePathBuilder( ).path( "messages" ).build( new Object[ 0 ] ).toString( );
+		String userUri = uriInfo.getAbsolutePathBuilder( ).path( "users" ).build( ).toString( );
+		String messageUri = uriInfo.getAbsolutePathBuilder( ).path( "messages" ).build( ).toString( );
 
 		return Response.ok( )
-					   .header( "Link", Hyperlinks.linkHeader( userUri, "getAllUsers", MediaType.APPLICATION_JSON ) )
+					   .header( "Link", Hyperlinks.linkHeader( userUri, "createUser", MediaType.APPLICATION_JSON ) )
 					   .header( "Link", Hyperlinks.linkHeader( messageUri, "getAllMessages", MediaType.APPLICATION_JSON ) )
 					   .build( );
 	}

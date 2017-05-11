@@ -32,7 +32,7 @@ public class User
 	}
 
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "users/${instance.id}/messages", type = "application/json",
-		rel = "messageUrl")
+		rel = "getMessagesOfUser")
 	private Link messageUrl;
 
 	@JsonConverter( LinkConverter.class )
@@ -48,7 +48,7 @@ public class User
 	}
 
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "users/${instance.id}", type = "application/json", rel=
-		"selfUri")
+		"self")
 	private Link selfUri;
 
 	@JsonConverter( LinkConverter.class )
