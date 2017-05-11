@@ -20,19 +20,14 @@ public class Message
 
 	private String text;
 
-	private Set<String> upVotes;
-
-	private Set<String> downVotes;
+	private Set<Vote> votes;
 
 	@JsonDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 	private Date creationDate;
 
 	public Message( )
 	{
-		this.upVotes = new HashSet<>( );
-
-		this.downVotes = new HashSet<>( );
-
+		this.votes = new HashSet<>();
 		this.creationDate = new Date( );
 	}
 
@@ -57,58 +52,31 @@ public class Message
 		this.text = text;
 	}
 
-	public int getUpVotes()
-	{
-		return upVotes.size( );
+	public int getScore() {
+		return votes.stream().mapToInt(Vote::getScore).sum();
 	}
 
-	public void addUpVote( String userId )
-	{
-		upVotes.add( userId );
-	}
-
-	public int getDownVotes()
-	{
-		return downVotes.size( );
-	}
-
-	public void addDownVote( String userId )
-	{
-		downVotes.add( userId );
-	}
-
-	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/upvotes", type =
+	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/votes", type =
 		"application/json",
-		rel = "putUpvote")
-	private Link upVoteLink;
+		rel = "putVote")
+	private Link voteLink;
+
+	public Set<Vote> getVotes() {
+		return votes;
+	}
+
+	public void addVote(Vote vote) {
+		this.votes.add(vote);
+	}
 
 	@JsonConverter( LinkConverter.class )
-	public Link getUpVoteLink( )
-	{
-		return upVoteLink;
+	public Link getVoteLink() {
+		return voteLink;
 	}
 
 	@JsonIgnore
-	public void setUpVoteLink( Link upVoteLink )
-	{
-		this.upVoteLink = upVoteLink;
-	}
-
-	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/downvotes", type =
-		"application/json",
-		rel = "putDownvote")
-	private Link downVoteLink;
-
-	@JsonConverter( LinkConverter.class )
-	public Link getDownVoteLink( )
-	{
-		return downVoteLink;
-	}
-
-	@JsonIgnore
-	public void setDownVoteLink( Link downVoteLink )
-	{
-		this.downVoteLink = downVoteLink;
+	public void setVoteLink(Link voteLink) {
+		this.voteLink = voteLink;
 	}
 
 
