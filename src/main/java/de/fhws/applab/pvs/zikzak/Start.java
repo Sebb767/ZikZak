@@ -8,9 +8,6 @@ import org.apache.catalina.webresources.StandardRoot;
 
 import java.io.File;
 
-/**
- * (c) Tobias Fertig, FHWS 2017
- */
 public class Start
 {
 	private static final String CONTEXT_PATH = "/zikzak";
@@ -21,7 +18,7 @@ public class Start
 	public static void main( String[] args ) throws Exception
 	{
 		Tomcat tomcat = new Tomcat( );
-		tomcat.setPort( 8080 );
+		tomcat.setPort( 8084 );
 
 		Context context = tomcat.addWebapp( CONTEXT_PATH, new File( WEB_APP_LOCATION ).getAbsolutePath( ) );
 		String pathToClasses = new File( WEB_APP_CLASSES ).getAbsolutePath( );
