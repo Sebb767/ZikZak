@@ -53,7 +53,7 @@ public class Message
 	}
 
 	public int getScore() {
-		return votes.stream().mapToInt(Vote::getScore).sum();
+		return votes.parallelStream().mapToInt(Vote::getScore).sum();
 	}
 
 	@InjectLink(style = InjectLink.Style.ABSOLUTE, value = "messages/${instance.id}/votes", type =
