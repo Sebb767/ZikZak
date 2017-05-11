@@ -4,24 +4,14 @@ package de.fhws.applab.pvs.zikzak.models;
  * Created by proj on 5/11/17.
  */
 public class Vote {
-    protected long id;
     protected String user;
     protected long Message;
     protected short score;
 
-    public Vote(long id, String user, long message, short score) {
-        this.id = id;
+    public Vote(String user, long message, short score) {
         this.user = user;
         Message = message;
         this.setScore(score);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUser() {
