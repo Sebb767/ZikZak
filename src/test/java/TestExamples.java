@@ -18,7 +18,7 @@ public class TestExamples
 {
 	private final static MediaType JSON = MediaType.parse( "application/json; charset=utf-8" );
 
-	private final static String BASE_URL = "http://localhost:8080/zikzak/api";
+	private final static String BASE_URL = "http://localhost:8084/zikzak/api";
 
 	private OkHttpClient client;
 
