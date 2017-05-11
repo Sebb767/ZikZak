@@ -1,6 +1,7 @@
 package de.fhws.applab.pvs.zikzak.api;
 
 import de.fhws.applab.pvs.zikzak.models.Message;
+import de.fhws.applab.pvs.zikzak.models.Vote;
 import de.fhws.applab.pvs.zikzak.storage.Storage;
 import de.fhws.applab.pvs.zikzak.utils.Hyperlinks;
 
@@ -156,9 +157,9 @@ public class MessageService
 	}
 
 	@PUT
-	@Path( "{id}/downvotes" )
+	@Path( "{id}/votes" )
 	@Consumes( MediaType.APPLICATION_JSON )
-	public Response doDownvote( @PathParam( "id" ) long id, String userid )
+	public Response doVote( @PathParam( "id" ) long id, Vote vote)
 	{
 		Message message = Storage.getInstance( ).getMessage( id );
 
@@ -167,9 +168,17 @@ public class MessageService
 			throw new WebApplicationException( Response.Status.NOT_FOUND );
 		}
 
-		message.addDownVote( userid );
+		message.addVote( vote );
 
 		return Response.noContent( ).build( );
+	}
+
+	@PUT
+	@Path( "{id}/downvotes" )
+	@Consumes( MediaType.APPLICATION_JSON )
+	public Response doDownvote( @PathParam( "id" ) long id, String userid )
+	{
+		return doVote(id, new Vote(userid, id, (short)-1));
 	}
 
 	@PUT
@@ -177,16 +186,7 @@ public class MessageService
 	@Consumes( MediaType.APPLICATION_JSON )
 	public Response doUpvote( @PathParam( "id" ) long id, String userid )
 	{
-		Message message = Storage.getInstance( ).getMessage( id );
-
-		if(message == null)
-		{
-			throw new WebApplicationException( Response.Status.NOT_FOUND );
-		}
-
-		message.addUpVote( userid );
-
-		return Response.noContent( ).build( );
+		return doVote(id, new Vote(userid, id, (short)1));
 	}
 
 	@GET
